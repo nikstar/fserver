@@ -36,8 +36,8 @@ func ParseArgs() {
 	case 1:
 		dir = flag.Arg(0)
 	default:
-		log.Fatalf("expected maximum 1 directory, got %v\n",
-			strings.Join(flag.Args(), ","))
+		log.Fatalf("expected directory name, got %v\n",
+			strings.Join(flag.Args(), ", "))
 	}
 	info, err := os.Stat(dir)
 	if err != nil {
