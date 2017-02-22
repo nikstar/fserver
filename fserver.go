@@ -80,5 +80,6 @@ func main() {
 	if browse {
 		go Open()
 	}
+	fmt.Printf("Running server at 127.0.0.1%s...\n", port)
 	log.Fatal(http.ListenAndServe(port, http.FileServer(http.Dir(dir))))
 }
