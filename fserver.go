@@ -74,6 +74,22 @@ func Open() {
 	exec.Command(cmd, args...).Start()
 }
 
+// NoCache sets headers that forbid caching
+// see:
+// * https://stackoverflow.com/questions/33880343/go-webserver-dont-cache-files-using-timestamp
+// * https://stackoverflow.com/questions/49547/how-to-control-web-page-caching-across-all-browsers
+func NoCache(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		for k, v := range map[string]string{
+			"Expires":       "0",
+			"Cache-Control": "no-store, must-revalidate",
+		} {
+			w.Header().Set(k, v)
+		}
+		h.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	ParseArgs()
 	port := fmt.Sprintf(":%d", port)
@@ -81,5 +97,7 @@ func main() {
 		go Open()
 	}
 	fmt.Printf("Running server at 127.0.0.1%s...\n", port)
-	log.Fatal(http.ListenAndServe(port, http.FileServer(http.Dir(dir))))
+	handler := http.FileServer(http.Dir(dir))
+	handler = NoCache(handler)
+	log.Fatal(http.ListenAndServe(port, handler))
 }
