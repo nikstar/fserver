@@ -19,16 +19,11 @@ var (
 )
 
 func init() {
-	const (
-		def   = 8080
-		usage = "deployment endpoint"
-	)
-	flag.IntVar(&port, "port", def, usage)
-	flag.IntVar(&port, "p", def, usage+" (shorthand)")
+	flag.IntVar(&port, "p", 8080, "deployment port")
 	flag.BoolVar(&browse, "open", false, "open browser window")
 }
 
-func ParseArgs() {
+func parseArgs() {
 	flag.Parse()
 	switch len(flag.Args()) {
 	case 0:
@@ -91,7 +86,7 @@ func NoCache(h http.Handler) http.Handler {
 }
 
 func main() {
-	ParseArgs()
+	parseArgs()
 	port := fmt.Sprintf(":%d", port)
 	if browse {
 		go Open()
